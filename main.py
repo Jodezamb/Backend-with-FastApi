@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 #FASTAPI
 from fastapi import FastAPI
-from fastapi import Body # me permite de manera explicita que un parametro que llegas es de tipo Body
+from fastapi import Body , Query# me permite de manera explicita que un parametro que llegas es de tipo Body
 
 app=FastAPI()
 
@@ -40,3 +40,13 @@ def home():
 @app.post("/person/new") #El cliente se comunica con el servidor  tipo post datos del cliente al servidor
 def create_person(person: Person=Body(...)): # hay que enbiar el request body dentro de la funcion 
     return person
+
+
+#Validaciones query parameters
+
+@app.get("/person/detail")
+def show_person(
+    name:Optional[str]=Query(None,min_length=1,max_length=50),# como un query pamater puedo ser opcional, pero para validar hay que poner el rango 
+    age:str=Query(...)
+):
+    return {name:age}
