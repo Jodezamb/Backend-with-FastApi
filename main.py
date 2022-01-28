@@ -1,5 +1,7 @@
 #Python
-from typing import Optional # ti[ado estatico]
+from turtle import update
+from typing import Optional
+from unittest import result # ti[ado estatico]
 
 # Pydactic  -> es una libreria para importar modelos
 from pydantic import BaseModel
@@ -28,7 +30,10 @@ class Person(BaseModel):
     '''Tambien podemos tener parametos opcionales para eso se importo 
         la libreria optional, el none se pone ya que puede haver o no puede haber nada en la base de datos'''
 
-
+class Location(BaseModel):
+    City:str
+    Country:str
+    Address:str
 
 @app.get("/")  # del servidor al cliente
 def home():
@@ -99,7 +104,27 @@ def show_person(
     
     
 ):
-    
+    return {person_id: 'It exists'}
+
+
+#Validations: rEQUEST BODY
+@app.put("/person/{person_id}")
+def update_person(
+    person_id: int =Path(
+    ...,
+    title="Person Id",
+    description="This is person Id",
+    gt=0
+
+    ),
+    person: Person=Body(...),
+    location: Location=Body(...)
     
 
-    return {person_id: 'It exists'}
+
+    ):
+    result=person.dict()
+    result.update(location.dict())
+
+    return result
+
