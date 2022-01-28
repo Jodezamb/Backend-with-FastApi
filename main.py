@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 #FASTAPI
 from fastapi import FastAPI
-from fastapi import Body , Query# me permite de manera explicita que un parametro que llegas es de tipo Body
+from fastapi import Body , Query, Path# me permite de manera explicita que un parametro que llegas es de tipo Body
 
 app=FastAPI()
 
@@ -46,8 +46,18 @@ def create_person(person: Person=Body(...)): # hay que enbiar el request body de
 
 @app.get("/person/detail")
 def show_person(
-    name:Optional[str]=Query(None,min_length=1,max_length=50),# como un query pamater puedo ser opcional, pero para validar hay que poner el rango 
-    age:str=Query(...)
+    name:Optional[str]=Query(
+        None,
+        min_length=1,# como un query pamater puedo ser opcional, pero para validar hay que poner el rango 
+        max_length=50, 
+        title="Person Name",
+        description='This is the person name, its between 1 and 50 characters'
+        ),
+    age:str=Query(
+        ...,
+        title="Person Age",
+        description="This is the person age. It's requiered"
+        )
 ):
     return {name:age}
 
@@ -66,3 +76,30 @@ ge : (greater or equal than ≥) Para especificar que el valor debe ser mayor o 
 le : (less or equal than ≤) Para especificar que el valor debe ser menor o igual.
 gt : (greater than >) Para especificar que el valor debe ser mayor.
 lt : (less than <) Para especificar que el valor debe ser menor.'''
+
+
+# Validaciones path_paramaters
+
+@app.get("/person/detail/{person_id}")
+def show_person(
+    person_id: int=Path(...,gt=0),
+    name:Optional[str]=Query(
+        None,
+        min_length=1,# como un query pamater puedo ser opcional, pero para validar hay que poner el rango 
+        max_length=50, 
+        title="Person Name",
+        description='This is the person name, its between 1 and 50 characters'
+        ),
+    age:str=Query(
+        ...,
+        title="Person Age",
+        description="This is the person age. It's requiered"
+        )
+    
+    
+    
+):
+    
+    
+
+    return {person_id: 'It exists'}
